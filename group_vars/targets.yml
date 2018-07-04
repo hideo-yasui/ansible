@@ -1,0 +1,5 @@
+mysqld_5_6:
+  # root パスワード
+  root_password: xxxxxxxx
+  # 接続用設定ファイルパス
+  defaults_file: /root/.my.cnf

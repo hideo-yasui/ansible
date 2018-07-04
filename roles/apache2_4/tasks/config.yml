@@ -1,0 +1,39 @@
+---
+#####
+# httpd.confのデプロイ
+#####
+- name: check existance /etc/httpd/conf
+  stat: path=/etc/httpd/conf
+  register: etc_httpd_conf
+
+- name: deploy /etc/httpd/conf/httpd.conf
+  template: src=httpd.conf.j2 dest=/etc/httpd/conf/httpd.conf
+  when: etc_httpd_conf.stat.exists
+
+- name: check existance /usr/local/apache2/conf
+  stat: path=/usr/local/apache2/conf
+  register: usr_local_apache_conf
+
+- name: deploy /usr/local/apache2/conf/httpd.conf
+  template: src=httpd.conf.j2 dest=/usr/local/apache2/conf/httpd.conf
+  when: usr_local_apache_conf.stat.exists
+
+
+#####
+# laravel.conf のデプロイ
+#####
+- name: check existance /etc/httpd/conf.d
+  stat: path=/etc/httpd/conf.d
+  register: etc_httpd_conf_d
+
+- name: deploy /etc/httpd/conf.d/laravel.conf
+  template: src=laravel.conf.j2 dest=/etc/httpd/conf.d/laravel.conf
+  when: etc_httpd_conf_d.stat.exists
+
+- name: check existance /usr/local/apache2/conf.d
+  stat: path=/usr/local/apache2/conf.d
+  register: usr_local_httpd_conf_d
+
+- name: deploy config
+  template: src=laravel.conf.j2 dest=/usr/local/apache2/conf.d/laravel.conf
+  when: usr_local_httpd_conf_d.stat.exists

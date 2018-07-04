@@ -1,0 +1,5 @@
+---
+- name: deploy php.ini
+  template:
+    src: php.ini.j2
+    dest: /etc/php.ini

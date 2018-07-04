@@ -1,0 +1,6 @@
+---
+- name: install libpcre
+  yum: name={{ item }} state=installed
+  with_items:
+    - pcre
+    - pcre-devel

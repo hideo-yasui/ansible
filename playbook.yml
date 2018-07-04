@@ -1,0 +1,10 @@
+- hosts: all
+  become: yes
+  become_user: root
+  vars:
+    srcpath: /usr/local/src
+  roles:
+  - git
+  - php7
+  - laravel
+  - apache2_4

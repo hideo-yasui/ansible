@@ -1,0 +1,11 @@
+<VirtualHost *:80>
+        DocumentRoot /home/vagrant/applications/myapp/public
+
+        ErrorLog /etc/httpd/logs/laravel_error.log
+        CustomLog /etc/httpd/logs/laravel_access.log combined
+
+        <Directory "/home/vagrant/applications/myapp/public">
+                AllowOverride All
+                Require all granted
+        </Directory>
+</VirtualHost>

@@ -1,0 +1,28 @@
+---
+- hosts: all
+  become: yes
+  become_user: root
+  tasks:
+   - name: install apache
+     yum: name=httpd
+
+   - name: CentOS6 start httpd
+     service: name=httpd state=restarted
+     when:  (ansible_distribution == "CentOS" and ansible_distribution_major_version == "6")
+
+   - name: CentOS7 start htpd
+     systemd: name=httpd state=restarted
+     when:  (ansible_distribution == "CentOS" and ansible_distribution_major_version == "7")
+
+   - name: iptables allow port 80
+     lineinfile: dest=/etc/sysconfig/iptables line="-A INPUT -m state --state NEW -m tcp -p tcp --dport 80 -j ACCEPT" insertafter="^:OUTPUT "
+     notify: restart iptables
+     when:  (ansible_distribution == "CentOS" and ansible_distribution_major_version == "6")
+
+  handlers:
+     - name: restart iptables
+       service: name=iptables state=restarted
+
+     - name: restart firewalld
+       service: name=firewalld state=restarted
+ 

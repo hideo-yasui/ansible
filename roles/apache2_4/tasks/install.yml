@@ -1,0 +1,53 @@
+---
+#####
+# Apacheのインストール
+#####
+
+# Apacheのビルドに必要なlibpcreをインストール
+- include: install_libpcre.yml
+
+# ソースのダウンロードと解凍
+- name: download apache src
+  get_url: url=http://ftp.kddilabs.jp/infosystems/apache/httpd/httpd-2.4.29.tar.gz dest={{ srcpath }}
+
+- name: unzip apache src file
+  command: chdir={{ srcpath }} tar xvf httpd-2.4.29.tar.gz
+
+####
+# APR, APR-util のダウンロード＆httpd-2.4.29/srclibへのコピーする必要があるらしい
+# http://apr.apache.org/download.cgi
+###
+- name: download APR
+  get_url: url=http://ftp.kddilabs.jp/infosystems/apache/apr/apr-1.6.3.tar.gz dest={{ srcpath }}
+
+- name: unzip APR
+  command: chdir={{ srcpath }} tar xvf apr-1.6.3.tar.gz
+
+# srclib/apr に移す必要があるので注意
+# TODO すでに srclib/apr とかがあるとバグるので直す
+- name: move APR to srclib
+  command: mv {{ srcpath }}/apr-1.6.3 {{ srcpath }}/httpd-2.4.29/srclib/apr
+
+# APR-util のために expat-devel が必要
+- name: install expat-devel
+  yum: name=expat-devel state=installed
+
+- name: download APR-util
+  get_url: url=http://ftp.kddilabs.jp/infosystems/apache/apr/apr-util-1.6.1.tar.gz dest={{ srcpath }}
+
+- name: unzip APR-util
+  command: chdir={{ srcpath }} tar xvf apr-util-1.6.1.tar.gz
+
+# srclib/api-util に移す必要があるので注意
+- name: move APR-util to srclib
+  command: mv {{ srcpath }}/apr-util-1.6.1 {{ srcpath }}/httpd-2.4.29/srclib/apr-util
+
+# Apacheのビルド
+- name: configure apache
+  command: chdir={{ srcpath }}/httpd-2.4.29 ./configure
+
+- name: make apache
+  command: chdir={{ srcpath }}/httpd-2.4.29 make
+
+- name: install apache
+  command: chdir={{ srcpath }}/httpd-2.4.29 make install

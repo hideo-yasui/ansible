@@ -1,0 +1,7 @@
+- hosts: dbservers
+  become: yes
+  become_user: root
+  vars:
+    srcpath: /usr/local/src
+  roles:
+  - db
